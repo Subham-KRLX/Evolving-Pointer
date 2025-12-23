@@ -14,6 +14,7 @@ window.addEventListener(
 	false
 );
 
+
 const resize = () => {
 	width = window.innerWidth;
 	height = window.innerHeight;
@@ -29,6 +30,7 @@ const prepend = (use, i) => {
 	elem.setAttributeNS(xlinkns, "xlink:href", "#" + use);
 	screen.prepend(elem);
 };
+
 
 const N = 40;
 
@@ -74,5 +76,6 @@ const run = () => {
 		pointer.y += (height / 2 - pointer.y) * 0.05;
 	}
 };
+
 
 run();
