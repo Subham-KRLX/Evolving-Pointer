@@ -9,7 +9,6 @@ html {
   background: #f5f5f5; 
   touch-action: none;
 }
-
 svg {
   position: absolute;
   width: 100%;
@@ -17,11 +16,9 @@ svg {
   background: transparent;
   cursor: pointer;
 }
-
 #Cabeza path:first-child {
   fill: #f8f8f8; 
 }
-
 #Cabeza path:last-child {
   fill: #333333; 
   filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.7)) 
@@ -37,7 +34,6 @@ svg {
 #Aletas stop:last-child {
   stop-color: #996515;
 }
-
 #Espina stop:first-child {
   stop-color: #c1272d; 
 }
@@ -67,4 +63,5 @@ body::before {
   background-size: 20px 20px;
   pointer-events: none;
   opacity: 0.5;
+
 }
