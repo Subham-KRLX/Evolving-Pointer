@@ -9,6 +9,7 @@ html {
   background: #f5f5f5; 
   touch-action: none;
 }
+
 svg {
   position: absolute;
   width: 100%;
@@ -16,6 +17,7 @@ svg {
   background: transparent;
   cursor: pointer;
 }
+
 #Cabeza path:first-child {
   fill: #f8f8f8; 
 }
@@ -65,3 +67,4 @@ body::before {
   opacity: 0.5;
 
 }
+
