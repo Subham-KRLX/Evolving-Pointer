@@ -15,7 +15,6 @@ const resize = () => {
 	width = window.innerWidth;
 	height = window.innerHeight;
 };
-
 let width, height;
 window.addEventListener("resize", () => resize(), false);
 resize();
