@@ -9,6 +9,7 @@ window.addEventListener(
 		pointer.y = e.clientY;
 		rad = 0;
 	},
+	
 	false
 );
 const resize = () => {
