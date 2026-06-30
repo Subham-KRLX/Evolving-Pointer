@@ -42,7 +42,6 @@ for (let i = 1; i < N; i++) {
 	else if (i === 8 || i === 14) prepend("Aletas", i);
 	else prepend("Espina", i);
 }
-
 const run = () => {
 	requestAnimationFrame(run);
 	let e = elems[0];
