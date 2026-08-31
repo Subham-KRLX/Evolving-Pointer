@@ -1,4 +1,5 @@
 "use strict"
+
 const screen = document.getElementById("screen");
 const xmlns = "http://www.w3.org/2000/svg";
 const xlinkns = "http://www.w3.org/1999/xlink";
