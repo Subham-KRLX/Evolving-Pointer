@@ -1,86 +1,98 @@
-"use strict"
+"use strict";
+
+const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+const SEGMENT_COUNT = 40;
+const HEAD_INDEX = 1;
+const FIN_INDEXES = new Set([8, 14]);
 
 const screen = document.getElementById("screen");
-const xmlns = "http://www.w3.org/2000/svg";
-window.addEventListener(
-	"pointermove",
-	(e) => {
-		pointer.x = e.clientX;
-		pointer.y = e.clientY;
-		rad = 0;
-	},
-	
-	false
-);
-const prepend = (use, i) => {
-	const elem = document.createElementNS(xmlns, "use");
-	elems[i].use = elem;
-	elem.setAttribute("href", `#${use}`);
-	screen.prepend(elem);
-};
+const segments = [];
 
-
-const N = 40;
-
-const elems = [];
 let width = Math.max(window.innerWidth, 1);
 let height = Math.max(window.innerHeight, 1);
 let radiusLimit = 0;
-let rad = 0;
+let radius = 0;
+let phase = Math.random();
 
-for (let i = 0; i < N; i++) elems[i] = { use: null, x: width / 2, y: 0 };
 const pointer = { x: width / 2, y: height / 2 };
-let frm = Math.random();
+
+for (let index = 0; index < SEGMENT_COUNT; index += 1) {
+  segments[index] = { element: null, x: width / 2, y: 0 };
+}
+
+const addSegment = (symbolId, index) => {
+  const element = document.createElementNS(SVG_NAMESPACE, "use");
+  element.setAttribute("href", `#${symbolId}`);
+  segments[index].element = element;
+  screen.prepend(element);
+};
+
+const createDragon = () => {
+  for (let index = 1; index < SEGMENT_COUNT; index += 1) {
+    if (index === HEAD_INDEX) addSegment("Cabeza", index);
+    else if (FIN_INDEXES.has(index)) addSegment("Aletas", index);
+    else addSegment("Espina", index);
+  }
+};
+
+const trackPointer = ({ clientX, clientY }) => {
+  pointer.x = clientX;
+  pointer.y = clientY;
+  radius = 0;
+};
 
 const resize = () => {
-	width = Math.max(window.innerWidth, 1);
-	height = Math.max(window.innerHeight, 1);
-	radiusLimit = Math.max(0, Math.min(width, height) / 2 - 20);
-	rad = Math.min(rad, radiusLimit);
-	pointer.x = Math.min(Math.max(pointer.x, 0), width);
-	pointer.y = Math.min(Math.max(pointer.y, 0), height);
+  width = Math.max(window.innerWidth, 1);
+  height = Math.max(window.innerHeight, 1);
+  radiusLimit = Math.max(0, Math.min(width, height) / 2 - 20);
+  radius = Math.min(radius, radiusLimit);
+  pointer.x = Math.min(Math.max(pointer.x, 0), width);
+  pointer.y = Math.min(Math.max(pointer.y, 0), height);
 };
 
-window.addEventListener("resize", resize, false);
+const animate = () => {
+  requestAnimationFrame(animate);
+
+  const leader = segments[0];
+  const offsetX = (Math.cos(3 * phase) * radius * width) / height;
+  const offsetY = (Math.sin(4 * phase) * radius * height) / width;
+
+  leader.x += (offsetX + pointer.x - leader.x) / 10;
+  leader.y += (offsetY + pointer.y - leader.y) / 10;
+
+  for (let index = 1; index < SEGMENT_COUNT; index += 1) {
+    const segment = segments[index];
+    const previous = segments[index - 1];
+    const angle = Math.atan2(segment.y - previous.y, segment.x - previous.x);
+
+    segment.x +=
+      (previous.x - segment.x + (Math.cos(angle) * (100 - index)) / 5) / 4;
+    segment.y +=
+      (previous.y - segment.y + (Math.sin(angle) * (100 - index)) / 5) / 4;
+
+    const scale = (162 + 4 * (1 - index)) / 50;
+    const rotation = (180 / Math.PI) * angle;
+    const translateX = (previous.x + segment.x) / 2;
+    const translateY = (previous.y + segment.y) / 2;
+
+    segment.element.setAttribute(
+      "transform",
+      `translate(${translateX},${translateY}) rotate(${rotation}) scale(${scale})`
+    );
+  }
+
+  if (radius < radiusLimit) radius += 1;
+  phase += 0.003;
+
+  if (radius > 60) {
+    pointer.x += (width / 2 - pointer.x) * 0.05;
+    pointer.y += (height / 2 - pointer.y) * 0.05;
+  }
+};
+
+window.addEventListener("pointermove", trackPointer);
+window.addEventListener("resize", resize);
+
 resize();
-
-for (let i = 1; i < N; i++) {
-	if (i === 1) prepend("Cabeza", i);
-	else if (i === 8 || i === 14) prepend("Aletas", i);
-	else prepend("Espina", i);
-}
-const run = () => {
-	requestAnimationFrame(run);
-	let e = elems[0];
-	const ax = (Math.cos(3 * frm) * rad * width) / height;
-	const ay = (Math.sin(4 * frm) * rad * height) / width;
-	e.x += (ax + pointer.x - e.x) / 10;
-	e.y += (ay + pointer.y - e.y) / 10;
-	for (let i = 1; i < N; i++) {
-		let e = elems[i];
-		let ep = elems[i - 1];
-		const a = Math.atan2(e.y - ep.y, e.x - ep.x);
-		e.x += (ep.x - e.x + (Math.cos(a) * (100 - i)) / 5) / 4;
-		e.y += (ep.y - e.y + (Math.sin(a) * (100 - i)) / 5) / 4;
-		const s = (162 + 4 * (1 - i)) / 50;
-		e.use.setAttributeNS(
-			null,
-			"transform",
-			`translate(${(ep.x + e.x) / 2},${(ep.y + e.y) / 2}) rotate(${
-				(180 / Math.PI) * a
-			}) translate(${0},${0}) scale(${s},${s})`
-		);
-	}
-	if (rad < radiusLimit) rad++;
-	frm += 0.003;
-	if (rad > 60) {
-		pointer.x += (width / 2 - pointer.x) * 0.05;
-		pointer.y += (height / 2 - pointer.y) * 0.05;
-	}
-};
-
-
-run();
-
-
-
+createDragon();
+animate();
