@@ -13,14 +13,6 @@ window.addEventListener(
 	
 	false
 );
-const resize = () => {
-	width = window.innerWidth;
-	height = window.innerHeight;
-};
-let width, height;
-window.addEventListener("resize", () => resize(), false);
-resize();
-
 const prepend = (use, i) => {
 	const elem = document.createElementNS(xmlns, "use");
 	elems[i].use = elem;
@@ -32,11 +24,26 @@ const prepend = (use, i) => {
 const N = 40;
 
 const elems = [];
+let width = Math.max(window.innerWidth, 1);
+let height = Math.max(window.innerHeight, 1);
+let radiusLimit = 0;
+let rad = 0;
+
 for (let i = 0; i < N; i++) elems[i] = { use: null, x: width / 2, y: 0 };
 const pointer = { x: width / 2, y: height / 2 };
-const radm = Math.min(pointer.x, pointer.y) - 20;
 let frm = Math.random();
-let rad = 0;
+
+const resize = () => {
+	width = Math.max(window.innerWidth, 1);
+	height = Math.max(window.innerHeight, 1);
+	radiusLimit = Math.max(0, Math.min(width, height) / 2 - 20);
+	rad = Math.min(rad, radiusLimit);
+	pointer.x = Math.min(Math.max(pointer.x, 0), width);
+	pointer.y = Math.min(Math.max(pointer.y, 0), height);
+};
+
+window.addEventListener("resize", resize, false);
+resize();
 
 for (let i = 1; i < N; i++) {
 	if (i === 1) prepend("Cabeza", i);
@@ -65,7 +72,7 @@ const run = () => {
 			}) translate(${0},${0}) scale(${s},${s})`
 		);
 	}
-	if (rad < radm) rad++;
+	if (rad < radiusLimit) rad++;
 	frm += 0.003;
 	if (rad > 60) {
 		pointer.x += (width / 2 - pointer.x) * 0.05;
