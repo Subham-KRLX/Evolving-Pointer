@@ -3,11 +3,14 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="An interactive SVG dragon that follows pointer movement.">
     <link rel="stylesheet" href="style.css">
-    <title>Interactive dragon</title>
+    <title>Interactive Dragon</title>
   </head>
   <body>
-    <svg>
+    <svg role="img" aria-labelledby="dragon-title dragon-description">
+      <title id="dragon-title">Interactive dragon</title>
+      <desc id="dragon-description">An animated dragon follows your pointer around the screen.</desc>
       <defs>
         <g id="Cabeza" transform="matrix(1, 0, 0, 1, 0, 0)">
           <path style="fill:#FFFFFF;fill-opacity:1" d="M-28.9,-1.1L-28.55 -1.95Q-28.1 -3.1 -27.25 -2.95L-26.7 -2.95Q-27.7 -1.65 -28.9 -1.1M-18.35,-1.8Q-15.1 -10.3 -9.6 -6.05Q-15.1 -6.2 -18.35 -1.8M-18.35,1.1Q-15.1 5.45 -9.6 5.35Q-15.1 9.55 -18.35 1.1M-26.7,2.2L-27.25 2.25Q-28.1 2.4 -28.55 1.2L-28.9 0.35Q-27.7 0.9 -26.7 2.2" />
