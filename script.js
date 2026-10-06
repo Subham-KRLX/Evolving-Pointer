@@ -2,7 +2,6 @@
 
 const screen = document.getElementById("screen");
 const xmlns = "http://www.w3.org/2000/svg";
-const xlinkns = "http://www.w3.org/1999/xlink";
 window.addEventListener(
 	"pointermove",
 	(e) => {
@@ -16,7 +15,7 @@ window.addEventListener(
 const prepend = (use, i) => {
 	const elem = document.createElementNS(xmlns, "use");
 	elems[i].use = elem;
-	elem.setAttributeNS(xlinkns, "xlink:href", "#" + use);
+	elem.setAttribute("href", `#${use}`);
 	screen.prepend(elem);
 };
 
