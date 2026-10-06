@@ -16,6 +16,7 @@ let radiusLimit = 0;
 let radius = 0;
 let phase = Math.random();
 let previousTimestamp = null;
+let animationFrameId = null;
 
 const pointer = { x: width / 2, y: height / 2 };
 
@@ -57,7 +58,7 @@ const adjustedEasing = (strength, frameScale) =>
   1 - Math.pow(1 - strength, frameScale);
 
 const animate = (timestamp) => {
-  requestAnimationFrame(animate);
+  animationFrameId = requestAnimationFrame(animate);
 
   const elapsed = previousTimestamp === null ? FRAME_DURATION : timestamp - previousTimestamp;
   const frameScale = Math.min(Math.max(elapsed / FRAME_DURATION, 0), MAX_FRAME_SCALE);
@@ -105,9 +106,30 @@ const animate = (timestamp) => {
   }
 };
 
+const startAnimation = () => {
+  if (animationFrameId !== null) return;
+
+  previousTimestamp = null;
+  animationFrameId = requestAnimationFrame(animate);
+};
+
+const stopAnimation = () => {
+  if (animationFrameId === null) return;
+
+  cancelAnimationFrame(animationFrameId);
+  animationFrameId = null;
+  previousTimestamp = null;
+};
+
+const handleVisibilityChange = () => {
+  if (document.hidden) stopAnimation();
+  else startAnimation();
+};
+
 window.addEventListener("pointermove", trackPointer);
 window.addEventListener("resize", resize);
+document.addEventListener("visibilitychange", handleVisibilityChange);
 
 resize();
 createDragon();
-requestAnimationFrame(animate);
+startAnimation();
